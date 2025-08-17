@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loto Kombinasyon Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .section h3 {
+            color: #444;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        input, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .combinations {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .combination {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .combination:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .combination-numbers {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
+            margin: 20px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        .number-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .number-btn:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
+        .number-btn.selected {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .selected-numbers {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            min-height: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .selected-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        .clear-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .number-grid {
+                grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+            }
+            
+            .number-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Loto Kombinasyon Sistemi</h1>
+        
+        <!-- Sayı Seçim Alanı -->
+        <div class="section">
+            <h3>🎯 Sayı Seçimi (1-80 arası)</h3>
+            
+            <div class="selected-numbers" id="selectedNumbers">
+                <span style="color: #666;">Seçilen sayılar burada görünecek...</span>
+                <button class="clear-btn" onclick="clearSelection()" style="display: none;" id="clearBtn">Temizle</button>
+            </div>
+            
+            <div class="number-grid" id="numberGrid"></div>
+            
+            <div class="input-group">
+                <div class="input-field">
+                    <label>Seçilecek Sayı Adedi:</label>
+                    <input type="number" id="numbersToSelect" value="6" min="3" max="15">
+                </div>
+            </div>
+        </div>
+
+        <!-- Haftalık Kombinasyonlar -->
+        <div class="section">
+            <h3>📊 Haftalık Kombinasyonlar (3 Adet)</h3>
+            <button class="btn" onclick="generateWeeklyCombinations()">
+                🎲 Haftalık Kombinasyonları Üret
+            </button>
+            <div class="combinations" id="weeklyCombinations"></div>
+        </div>
+
+        <!-- Kendi Rakamlardan Kombinasyon -->
+        <div class="section">
+            <h3>✍️ Manuel Sayı Girişi</h3>
+            <div class="input-field">
+                <label>Rakamlarınızı girin (virgül veya boşlukla ayırın):</label>
+                <textarea 
+                    id="customNumbers" 
+                    placeholder="Örnek: 5, 12, 23, 34, 41, 45, 7, 19, 28"
+                ></textarea>
+                <small style="color: #666; margin-top: 5px;">En az <span id="minNumbers">6</span> adet sayı girmelisiniz (1-80 arası)</small>
+            </div>
+            <button class="btn" onclick="generateFromCustomNumbers()">
+                ⚡ Kombinasyonları Üret
+            </button>
+            <div class="combinations" id="customCombinations"></div>
+        </div>
+
+        <!-- Uyarı -->
+        <div class="warning">
+            <strong>⚠️ Önemli Uyarı:</strong> Bu sistem tamamen rastgele kombinasyonlar üretir. 
+            Hiçbir matematiksel sistem loto sonuçlarını tahmin edemez. 
+            Sorumlu bir şekilde oynayın ve kaybetmeyi göze alamayacağınız parayı riske atmayın.
+        </div>
+    </div>
+
+    <script>
+        let selectedNumbers = [];
+        
+        // Sayfa yüklendiğinde sayı butonlarını oluştur
+        window.onload = function() {
+            createNumberGrid();
+            updateMinNumbers();
+            setupEventListeners();
+        };
+
+        // 1-80 arası sayı butonlarını oluştur
+        function createNumberGrid() {
+            var grid = document.getElementById('numberGrid');
+            grid.innerHTML = '';
+            
+            for (var i = 1; i <= 80; i++) {
+                var btn = document.createElement('button');
+                btn.className = 'number-btn';
+                btn.textContent = i;
+                btn.onclick = (function(num) {
+                    return function() { toggleNumber(num); };
+                })(i);
+                grid.appendChild(btn);
+            }
+        }
+
+        // Sayı seçimini toggle et
+        function toggleNumber(number) {
+            var numbersToSelect = parseInt(document.getElementById('numbersToSelect').value);
+            
+            if (selectedNumbers.includes(number)) {
+                selectedNumbers = selectedNumbers.filter(function(n) { return n !== number; });
+            } else {
+                if (selectedNumbers.length < numbersToSelect) {
+                    selectedNumbers.push(number);
+                } else {
+                    alert('En fazla ' + numbersToSelect + ' sayı seçebilirsiniz!');
+                    return;
+                }
+            }
+            
+            updateSelectedNumbers();
+            updateNumberGrid();
+        }
+
+        // Seçilen sayıları güncelle
+        function updateSelectedNumbers() {
+            var container = document.getElementById('selectedNumbers');
+            
+            if (selectedNumbers.length === 0) {
+                container.innerHTML = '<span style="color: #666;">Seçilen sayılar burada görünecek...</span>';
+            } else {
+                var sortedNumbers = selectedNumbers.slice().sort(function(a, b) { return a - b; });
+                container.innerHTML = sortedNumbers.map(function(num) {
+                    return '<span class="selected-number">' + num + '</span>';
+                }).join('') + '<button class="clear-btn" onclick="clearSelection()">Temizle</button>';
+            }
+        }
+
+        // Sayı grid'ini güncelle
+        function updateNumberGrid() {
+            var buttons = document.querySelectorAll('.number-btn');
+            buttons.forEach(function(btn, index) {
+                var number = index + 1;
+                if (selectedNumbers.includes(number)) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        // Seçimi temizle
+        function clearSelection() {
+            selectedNumbers = [];
+            updateSelectedNumbers();
+            updateNumberGrid();
+        }
+
+        // Seçilecek sayı adedi değiştiğinde
+        function setupEventListeners() {
+            document.getElementById('numbersToSelect').addEventListener('input', function() {
+                var value = parseInt(this.value);
+                if (value < selectedNumbers.length) {
+                    selectedNumbers = selectedNumbers.slice(0, value);
+                    updateSelectedNumbers();
+                    updateNumberGrid();
+                }
+                updateMinNumbers();
+            });
+        }
+
+        function updateMinNumbers() {
+            const value = document.getElementById('numbersToSelect').value;
+            document.getElementById('minNumbers').textContent = value;
+        }
+
+        // Rastgele kombinasyon üretme
+        function generateRandomCombination() {
+            var numbersToSelect = parseInt(document.getElementById('numbersToSelect').value);
+            var numbers = [];
+            
+            while (numbers.length < numbersToSelect) {
+                var random = Math.floor(Math.random() * 80) + 1;
+                if (!numbers.includes(random)) {
+                    numbers.push(random);
+                }
+            }
+            return numbers.sort(function(a, b) { return a - b; });
+        }
+
+        // Seçilen sayılardan kombinasyon üret
+        function generateFromSelectedNumbers() {
+            var numbersToSelect = parseInt(document.getElementById('numbersToSelect').value);
+            
+            if (selectedNumbers.length === 0) {
+                alert('Lütfen önce sayı seçin!');
+                return null;
+            }
+            
+            if (selectedNumbers.length < numbersToSelect) {
+                // Eksik sayıları rastgele tamamla
+                var remaining = selectedNumbers.slice();
+                var available = [];
+                
+                for (var i = 1; i <= 80; i++) {
+                    if (!selectedNumbers.includes(i)) {
+                        available.push(i);
+                    }
+                }
+                
+                while (remaining.length < numbersToSelect && available.length > 0) {
+                    var randomIndex = Math.floor(Math.random() * available.length);
+                    remaining.push(available.splice(randomIndex, 1)[0]);
+                }
+                
+                return remaining.sort(function(a, b) { return a - b; });
+            } else if (selectedNumbers.length === numbersToSelect) {
+                return selectedNumbers.slice().sort(function(a, b) { return a - b; });
+            } else {
+                // Fazla sayı varsa rastgele seç
+                var shuffled = selectedNumbers.slice().sort(function() { return Math.random() - 0.5; });
+                return shuffled.slice(0, numbersToSelect).sort(function(a, b) { return a - b; });
+            }
+        }
+
+        // Haftalık kombinasyonları üret
+        function generateWeeklyCombinations() {
+            var combinations = [];
+            
+            // İlk kombinasyon seçilen sayılardan
+            if (selectedNumbers.length > 0) {
+                var firstCombo = generateFromSelectedNumbers();
+                if (firstCombo) combinations.push(firstCombo);
+            }
+            
+            // Kalan kombinasyonları rastgele üret
+            while (combinations.length < 3) {
+                combinations.push(generateRandomCombination());
+            }
+            
+            displayCombinations('weeklyCombinations', combinations);
+        }
+
+        // Kendi rakamlardan kombinasyon üret
+        function generateFromCustomNumbers() {
+            var customInput = document.getElementById('customNumbers').value;
+            var numbersToSelect = parseInt(document.getElementById('numbersToSelect').value);
+            
+            if (!customInput.trim()) {
+                alert('Lütfen sayıları girin!');
+                return;
+            }
+            
+            var numbers = customInput
+                .split(/[,\s]+/)
+                .map(function(n) { return parseInt(n.trim()); })
+                .filter(function(n) { return !isNaN(n) && n >= 1 && n <= 80; });
+            
+            if (numbers.length < numbersToSelect) {
+                alert('En az ' + numbersToSelect + ' adet geçerli sayı girmelisiniz!');
+                return;
+            }
+
+            var combinations = [];
+            var uniqueNumbers = numbers.filter(function(value, index, self) {
+                return self.indexOf(value) === index;
+            });
+            
+            if (uniqueNumbers.length === numbersToSelect) {
+                combinations.push(uniqueNumbers.sort(function(a, b) { return a - b; }));
+            } else if (uniqueNumbers.length > numbersToSelect) {
+                for (var i = 0; i < 3; i++) {
+                    var shuffled = uniqueNumbers.slice().sort(function() { return Math.random() - 0.5; });
+                    var selected = shuffled.slice(0, numbersToSelect).sort(function(a, b) { return a - b; });
+                    
+                    var exists = combinations.some(function(combo) {
+                        return combo.length === selected.length && 
+                               combo.every(function(num, index) { return num === selected[index]; });
+                    });
+                    
+                    if (!exists) {
+                        combinations.push(selected);
+                    }
+                }
+            }
+            
+            displayCombinations('customCombinations', combinations);
+        }
+
+        // Kombinasyonları göster
+        function displayCombinations(containerId, combinations) {
+            var container = document.getElementById(containerId);
+            
+            if (combinations.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Kombinasyon bulunamadı.</p>';
+                return;
+            }
+            
+            container.innerHTML = combinations.map(function(combo, index) {
+                return '<div class="combination">' +
+                    '<div>' +
+                        '<strong>Kombinasyon ' + (index + 1) + ':</strong>' +
+                        '<span class="combination-numbers">' + combo.join(' - ') + '</span>' +
+                    '</div>' +
+                    '<button class="copy-btn" onclick="copyToClipboard(\'' + combo.join(', ') + '\')">' +
+                        '📋 Kopyala' +
+                    '</button>' +
+                '</div>';
+            }).join('');
+        }
+
+        // Panoya kopyala
+        function copyToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    // Kopyalama başarılı feedback'i
+                    var btn = event.target;
+                    var originalText = btn.innerHTML;
+                    btn.innerHTML = '✅ Kopyalandı';
+                    btn.style.background = '#28a745';
+                    
+                    setTimeout(function() {
+                        btn.innerHTML = originalText;
+                        btn.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+                    }, 2000);
+                }).catch(function() {
+                    fallbackCopyToClipboard(text);
+                });
+            } else {
+                fallbackCopyToClipboard(text);
+            }
+        }
+
+        // Fallback kopyalama fonksiyonu
+        function fallbackCopyToClipboard(text) {
+            var textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                var successful = document.execCommand('copy');
+                if (successful) {
+                    var btn = event.target;
+                    var originalText = btn.innerHTML;
+                    btn.innerHTML = '✅ Kopyalandı';
+                    btn.style.background = '#28a745';
+                    
+                    setTimeout(function() {
+                        btn.innerHTML = originalText;
+                        btn.style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+                    }, 2000);
+                } else {
+                    alert('Kombinasyon: ' + text);
+                }
+            } catch (err) {
+                alert('Kombinasyon: ' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+</html>
